@@ -88,6 +88,7 @@
      */
     ns.Board = function(){
         var obj = ns.Notifier();
+        obj.view = {}; // ビューオブジェクトの保管場所
         /**
          * オブザーバ同期を設定する
          * @param {[[syncObject,observerMethod],...]} observelist 同期定義配列
@@ -103,9 +104,39 @@
          */
         obj.bind = function( binderlist ){
             for( var i=0 ; i<binderlist.length ; i++){
-                
+                var viewSetAction = obj.view.bindSetAction(binderlist[i][0],binderlist[i][1]);
+                obj.observe([[binderlist[i][1], viewSetAction]]);
             }
         }
         return obj;
     };
+
+    /**
+     * Viewオブジェクトの生成
+     * @param {array} datas オブザーバ同期するデータの連想配列
+     */
+    ns.View = function( datas ){
+        var obj = ns.Notifier();
+        obj.elements = {}; // 操作対象エレメントのセレクタを持つ連想配列
+        obj.bindings = []; // データバインドに用いるイベントメソッドの配列
+
+        obj.data = datas;  // Boardの持つバインド対象配列をセット
+        /**
+         * バインド用イベントメソッドの生成
+         * @param {str} element バインド対象エレメント
+         * @param {dataName} element バインド対象データ
+         * @return {function} 生成したメソッドの参照
+         */
+        obj.bindSetAction = function ( element, dataName ){
+            var bindFunc = function(){
+                $(obj.elements[element]).val(obj.data[dataName].get());
+            }
+            obj.bindings.push(bindFunc);
+            $(obj.elements[element]).on("change",function(){
+                data[dataName].data = $(obj.elements[element]).val();
+            });
+            return bindFunc;
+        }
+        return obj;
+    }
 }(this, "jqb.mvc"));
