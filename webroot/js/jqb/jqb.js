@@ -27,7 +27,7 @@
  * プロトタイプオブジェクト
  */
 (function(global, namespace){
-    var ns = addNamespace(namespace);
+    var ns = jqb.common.addNamespace(namespace);
     /**
      * 同期オブジェクトの生成
      */
@@ -39,10 +39,8 @@
          * @@aram {function} func 追加するメソッドの参照
          */
         obj.addObserver = function( func ){
-            obj.observers.push( funct );
+            obj.observers.push( func );
         };
-        /**
-         * 
         return obj;
     };
     /**
@@ -52,10 +50,14 @@
         var obj = ns.SyncObject();
         /**
          * オブザーバへの通知
+         * @param {function} exclution 通知から除外するメソッドの参照
          */
-        obj.notifiy = function(){
+        obj.notify = function( exclution ){
             for( var i=0 ; i<obj.observers.length ; i++ ){
-                obj.observers[i]();
+                if( exclution != undefined && exclution == obj.observers[i]){
+                    continue;
+                }
+                obj.observers[i](obj.get());
             }
         };
         return obj;
@@ -89,6 +91,7 @@
     ns.Board = function(){
         var obj = ns.Notifier();
         obj.view = {}; // ビューオブジェクトの保管場所
+        obj.actions = {}; // イベントハンドラの保管場所
         /**
          * オブザーバ同期を設定する
          * @param {[[syncObject,observerMethod],...]} observelist 同期定義配列
@@ -114,29 +117,45 @@
     /**
      * Viewオブジェクトの生成
      * @param {array} datas オブザーバ同期するデータの連想配列
+     * @param {array} actions イベントメソッドの配列
      */
-    ns.View = function( datas ){
+    ns.View = function( datas, actions ){
         var obj = ns.Notifier();
         obj.elements = {}; // 操作対象エレメントのセレクタを持つ連想配列
         obj.bindings = []; // データバインドに用いるイベントメソッドの配列
 
         obj.data = datas;  // Boardの持つバインド対象配列をセット
+        obj.actions = actions // Boardの持つアクションメソッドをセット
+        /**
+         * エレメントのセット
+         * @param {obj} elements {elementName: selector}
+         */
+        obj.useElements = function( elements ){
+            for( var i in elements){
+                obj.elements[i] = $(elements[i]);
+            }
+        }
+
         /**
          * バインド用イベントメソッドの生成
          * @param {str} element バインド対象エレメント
-         * @param {dataName} element バインド対象データ
+         * @param {data} element バインド対象データ
          * @return {function} 生成したメソッドの参照
          */
-        obj.bindSetAction = function ( element, dataName ){
+        obj.bindSetAction = function ( element, data ){
             var bindFunc = function(){
-                $(obj.elements[element]).val(obj.data[dataName].get());
-            }
+                element.off("change");
+                element.val(data.get());
+                element.on("change",eventFunc);
+            };
+            var eventFunc = function(){
+                data.set(element.val(), bindFunc);
+            };
             obj.bindings.push(bindFunc);
-            $(obj.elements[element]).on("change",function(){
-                data[dataName].data = $(obj.elements[element]).val();
-            });
+
+            element.on("change",eventFunc);
             return bindFunc;
         }
         return obj;
     }
-}(this, "jqb.mvc"));
+}(this, "jqb"));
