@@ -6,19 +6,21 @@
 
     // view
     ns.view = function( datas, actions ){
-    	var obj = jqb.View(datas, actions);
+    	var obj = jqb.jquery.View(datas, actions);
     	// elements
     	obj.useElements({
     		messagelist: "#message",
-    		submit: "#submit",
-    		content: "#content"
+    		submit:      "#submit",
+    		content:     "#content"
     	});
     	// events
     	obj.elements.submit.on("click", obj.actions.submit);
 
-    	obj.write = function( data ){
-    		obj.elements.messagelist.html(data);
-    	}
+    	// renderers
+    	obj.setRenderers({
+    		message: ["html", obj.elements.messagelist]
+    	});
+
     	return obj;
     };
 
@@ -52,7 +54,7 @@
     	]);
     	// === observe =====================================
     	obj.observe([
-    		[obj.datas.messagelist, obj.view.write]
+    		[obj.datas.messagelist, obj.view.renderers.message]
     	]);
     	return obj;
     }
