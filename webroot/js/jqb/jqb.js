@@ -156,6 +156,16 @@
             element.on("change",eventFunc);
             return bindFunc;
         }
+
+        /**
+         * イベントの定義
+         * @param events [["element", "event","methodName"]..]
+         */
+        obj.setEvents = function( events ){
+            for(var i =0 ; i<events.length ; i++){
+                obj.elements[events[i][0]].on(events[i][1], obj.actions[events[i][2]]);
+            }
+        }
         return obj;
     }
 }(this, "jqb"));

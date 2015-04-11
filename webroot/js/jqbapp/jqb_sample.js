@@ -9,15 +9,20 @@
     	var obj = jqb.jquery.View(datas, actions);
     	// elements
     	obj.useElements({
+        //  elementName : selector
     		messagelist: "#message",
     		submit:      "#submit",
     		content:     "#content"
     	});
     	// events
-    	obj.elements.submit.on("click", obj.actions.submit);
+    	obj.setEvents([
+        //  [eventName, eventtype, actionMethodName]
+            ["submit", "click", "submit"]
+        ]);
 
     	// renderers
     	obj.setRenderers({
+        //  rendererName: [type, elementName]
     		message: ["html", obj.elements.messagelist]
     	});
 
@@ -34,10 +39,10 @@
     	};
 
     	// === requesters ==================================
-    	obj.reuesters = [];
+    	obj.requesters = {};
 
     	// === logics ======================================
-    	obj.logics = [];
+    	obj.logics = {};
 
     	// === actions =====================================
     	obj.actions.submit = function(){
