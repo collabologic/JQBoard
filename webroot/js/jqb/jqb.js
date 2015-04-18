@@ -29,9 +29,9 @@
 (function(global, namespace){
     var ns = jqb.common.addNamespace(namespace);
     /**
-     * 同期オブジェクトの生成
+     * Notifireオブジェクトの生成
      */
-    ns.SyncObject = function(){
+    ns.Notifier = function(){
         var obj = {};
         obj.observers = []; //通知先メソッドの配列
         /**
@@ -41,13 +41,7 @@
         obj.addObserver = function( func ){
             obj.observers.push( func );
         };
-        return obj;
-    };
-    /**
-     * Notifireオブジェクトの生成
-     */
-    ns.Notifier = function(){
-        var obj = ns.SyncObject();
+
         /**
          * オブザーバへの通知
          * @param {function} exclution 通知から除外するメソッドの参照
