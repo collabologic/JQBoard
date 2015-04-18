@@ -71,4 +71,35 @@
         }
         return obj;
     }
+    /**
+     * HTTPリクエストを行うモデルを生成
+     * @param method POST/GETなどのHTTPメソッド
+     * @param url URL
+     */
+    ns.requester = function( method, url ) {
+        var obj = jqb.Notifier();
+        obj.method = method;
+        obj.url = url;
+
+        /**
+         * Ajaxリクエストを行い、結果を自データにセットする
+         * @param data リクエストに含めるデータ
+         * @param addUrl URLに追記するディレクトリなど
+         * @param options $.ajax()のオプション
+         */
+        obj.request( data, addUrl, options ){
+            var ajax_params = {
+                type : obj.method,
+                url : obj.url + addUrl,
+                data : data,
+                success : function( res ){
+                    obj.set(res);
+                }
+            };
+            if( url !== undefined ) {
+                $.extend( ajax_params, options);
+            }
+            $.ajax( ajax, params );
+        }
+    }
 }(this, "jqb.jquery"));

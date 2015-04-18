@@ -16,7 +16,7 @@
     	});
     	// events
     	obj.setEvents([
-        //  [eventName, eventtype, actionMethodName]
+        //  [elementName, eventtype, actionMethodName]
             ["submit", "click", "submit"]
         ]);
 

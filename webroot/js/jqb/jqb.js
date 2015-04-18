@@ -94,7 +94,7 @@
         obj.actions = {}; // イベントハンドラの保管場所
         /**
          * オブザーバ同期を設定する
-         * @param {[[syncObject,observerMethod],...]} observelist 同期定義配列
+         * @param {[[Notifier,observerMethod],...]} observelist 同期定義配列
          */
         obj.observe = function( observelist ){
             for(var i=0 ; i<observelist.length ; i++){
