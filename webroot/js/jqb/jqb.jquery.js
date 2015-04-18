@@ -26,10 +26,24 @@
          * InnerHTMLへの埋め込みメソッドを登録する
          * @param {str} name レンダリング名称
          * @param {str} element エレメント
+         * @param {str} outtype 書き出し方法（over, append, prepend)
          */
-        obj.setHtmlRenderer = function(name, element){
+        obj.setHtmlRenderer = function(name, element, outtype){
             var func = function(html){
-                element.html(html);
+                switch( outtype ){
+                    case "over":
+                        element.html(html);
+                        break;
+                    case "append":
+                        element.append(html);
+                        break;
+                    case "prepend":
+                        element.prepend(html);
+                        break;
+                    default:
+                        element.html(html);
+                        break;
+                }
             };
             obj.renderers[name] = func;
         }
@@ -38,10 +52,24 @@
          * @param {str} name レンダリング名称 
          * @param element {str} element エレメント
          * @param template {str} template jQueryテンプレートID
+         * @param {str} outtype 書き出し方法（over, append, prepend)
          */
-        obj.setJQueryTmplRenderer = function(name, element, template){
+        obj.setJQueryTmplRenderer = function(name, element, template, outtype){
             var func = function(data){
-                $(template).tmpl(data).appendTo(element);
+                switch( outtype ){
+                    case "over":
+                        element.html($(template.tmpl(data).html()));
+                        break;
+                    case "append":
+                        $(template).tmpl(data).appendTo(element);
+                        break;
+                    case "prepend":
+                        $(template).tmpl(data).prependTo(element);
+                        break;
+                    default:
+                        element.html($(template.tmpl(data).html()));
+                        break;
+                }
             };
             obj.renderers[name] = func;
         }
@@ -56,10 +84,10 @@
                         obj.setFormValueRenderer( i, list[i][1]);
                         break;
                     case "html":
-                        obj.setHtmlRenderer( i, list[i][1]);
+                        obj.setHtmlRenderer( i, list[i][1], list[i][2]);
                         break;
                     case "tmpl":
-                        obj.setJQueryTemplRenderer( i, list[i][1], list[i][2]);
+                        obj.setJQueryTemplRenderer( i, list[i][1], list[i][2], list[i][3]);
                         break;
                     case "func":
                         obj.renderers[i] = list[i][1];
@@ -87,7 +115,7 @@
          * @param addUrl URLに追記するディレクトリなど
          * @param options $.ajax()のオプション
          */
-        obj.request( data, addUrl, options ){
+        obj.request = function( data, addUrl, options ){
             var ajax_params = {
                 type : obj.method,
                 url : obj.url + addUrl,

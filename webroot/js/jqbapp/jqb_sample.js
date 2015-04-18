@@ -23,7 +23,7 @@
     	// renderers
     	obj.setRenderers({
         //  rendererName: [type, elementName]
-    		message: ["html", obj.elements.messagelist]
+    		message: ["html", obj.elements.messagelist, "append"]
     	});
 
     	return obj;
