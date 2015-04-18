@@ -8,7 +8,7 @@
     ns.view = function( datas, actions ){
     	var obj = jqb.jquery.View(datas, actions);
     	// elements
-    	obj.useElements({
+/*    	obj.useElements({
         //  elementName : selector
     		messagelist: "#message",
     		submit:      "#submit",
@@ -23,10 +23,10 @@
     	// renderers
     	obj.setRenderers({
         //  rendererName: [type, elementName]
-    		message: ["html", obj.elements.messagelist, "append"]
+    		message: ["html", "messagelist", "append"]
     	});
-
-    	return obj;
+*/
+    	return obj.setup();
     };
 
     // board

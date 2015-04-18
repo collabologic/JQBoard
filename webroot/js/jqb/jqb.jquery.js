@@ -81,13 +81,13 @@
             for( var i in list ) {
                 switch( list[i][0] ){
                     case "val": 
-                        obj.setFormValueRenderer( i, list[i][1]);
+                        obj.setFormValueRenderer( i, obj.elements[list[i][1]]);
                         break;
                     case "html":
-                        obj.setHtmlRenderer( i, list[i][1], list[i][2]);
+                        obj.setHtmlRenderer( i, obj.elements[list[i][1]], list[i][2]);
                         break;
                     case "tmpl":
-                        obj.setJQueryTemplRenderer( i, list[i][1], list[i][2], list[i][3]);
+                        obj.setJQueryTemplRenderer( i, obj.elements[list[i][1]], list[i][2], list[i][3]);
                         break;
                     case "func":
                         obj.renderers[i] = list[i][1];
@@ -97,6 +97,41 @@
                 }
             }
         }
+        /**
+         * ビューの初期化処理（テンプレートヘルパー）
+         * @return ビューのオブジェクト自身
+         */
+        obj.setup = function(){
+            // jqb-id
+            var tags = $("[jqb-id]");
+            var elements = {};
+            jQuery.each( tags, function( idx, tag ){
+                var id= tags.eq(idx).attr("jqb-id");
+                elements[id] = "[jqb-id=" + id + "]";
+            });
+            // jqb-renderers
+            var tags = $("[jqb-renderer]");
+            var renderers = {};
+            jQuery.each( tags, function( idx, tag ){
+                var id = tags.eq(idx).attr("jqb-id");
+                var rstr = tags.eq(idx).attr("jqb-renderer");
+                var rarry = rstr.split("/");
+                renderers[id] = rarry;
+            });
+            // jqb-event
+            var tags = $("[jqb-event]");
+            var events = [];
+            jQuery.each( tags, function( idx, tag ){
+                var estr = tags.eq(idx).attr("jqb-event");
+                var earry = estr.split("/");
+                events.push(earry);   
+            });
+            obj.useElements(elements);
+            obj.setEvents(events);
+            obj.setRenderers(renderers);
+            return obj;
+        }
+
         return obj;
     }
     /**

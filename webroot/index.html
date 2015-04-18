@@ -9,8 +9,8 @@
 <script type='text/javascript' src='./js/jqbapp/jqb_sample.js'></script>
 </head>
 <body>
-<input type="text" id="content"/>
-<input type="button" id="submit"/>
-<div id="message"></div>
+<input type="text" jqb-id="content"/>
+<input type="button" jqb-id="submit" jqb-event="submit/click/submit">
+<div jqb-id="message" jqb-renderer="html/message/append"></div>
 </body>
 </html>
